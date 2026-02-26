@@ -26,10 +26,16 @@ from ai.idea_parser import parse_idea
 from ai.question_engine import generate_questions
 from ai.answer_analyzer import analyze_answers
 from ai.file_generator import generate_files
+from ai.provider import call_ai
 from builders.claude_builder import ClaudeBuilder
 from builders.gemini_builder import GeminiBuilder
 from builders.preflight_builder import PreflightBuilder
-from core.constants import PROVIDER_CLAUDE
+from core.constants import (
+    PROVIDER_CLAUDE,
+    PROVIDER_GEMINI,
+    MODEL_OPTIONS,
+    get_stage_config,
+)
 from core.spec_builder import ProjectSpec
 
 console = Console()
@@ -49,18 +55,56 @@ def run_setup(
     if project_root is None:
         project_root = Path.cwd()
 
-    provider_label = provider.capitalize()
-
     # ── Header ──────────────────────────────────────────────
     console.print()
     console.print(
         Panel(
-            f"[bold cyan]🚀 Preflight AI — Project Setup[/bold cyan]\n"
-            f"[dim]Generating optimal AI config files • Provider: {provider_label}[/dim]",
+            "[bold cyan]🚀 Preflight AI — Project Setup[/bold cyan]\n"
+            "[dim]Generating optimal AI config folders[/dim]",
             border_style="cyan",
         )
     )
-    console.print()
+
+    # ── Step 0: Interactive Selection ───────────────────────
+    choices = [PROVIDER_CLAUDE, PROVIDER_GEMINI]
+    provider = Prompt.ask(
+        "Which [bold]AI Provider[/bold] do you want to use?",
+        choices=choices,
+        default=provider,
+    )
+
+    tiers = list(MODEL_OPTIONS[provider].keys())
+    tier = Prompt.ask(
+        f"Which [bold]{provider.capitalize()} Model Tier[/bold]?",
+        choices=tiers,
+        default=tiers[0],
+    )
+
+    # Apply selected models
+    selected_models = MODEL_OPTIONS[provider][tier]
+    if provider == PROVIDER_CLAUDE:
+        import core.constants as const
+        const.SONNET = selected_models["sonnet"]
+        const.HAIKU = selected_models["haiku"]
+        # Update stage config to reflect new constants
+        const.CLAUDE_STAGE_CONFIG["parse"]["model"] = const.HAIKU
+        const.CLAUDE_STAGE_CONFIG["questions"]["model"] = const.HAIKU
+        const.CLAUDE_STAGE_CONFIG["analysis"]["model"] = const.HAIKU
+        const.CLAUDE_STAGE_CONFIG["change_analysis"]["model"] = const.HAIKU
+        const.CLAUDE_STAGE_CONFIG["generate"]["model"] = const.SONNET
+    else:
+        import core.constants as const
+        const.GEMINI_PRO = selected_models["pro"]
+        const.GEMINI_FLASH = selected_models["flash"]
+        # Update stage config
+        const.GEMINI_STAGE_CONFIG["parse"]["model"] = const.GEMINI_FLASH
+        const.GEMINI_STAGE_CONFIG["questions"]["model"] = const.GEMINI_FLASH
+        const.GEMINI_STAGE_CONFIG["analysis"]["model"] = const.GEMINI_FLASH
+        const.GEMINI_STAGE_CONFIG["change_analysis"]["model"] = const.GEMINI_FLASH
+        const.GEMINI_STAGE_CONFIG["generate"]["model"] = const.GEMINI_PRO
+
+    provider_label = f"{provider.capitalize()} ({tier})"
+    console.print(f"[dim]Provider set to: {provider_label}[/dim]\n")
 
     # ── Step 1: Get idea ────────────────────────────────────
     idea_text = Prompt.ask(

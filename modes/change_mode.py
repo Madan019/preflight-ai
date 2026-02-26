@@ -23,7 +23,12 @@ from rich.table import Table
 
 from builders.claude_builder import ClaudeBuilder
 from builders.gemini_builder import GeminiBuilder
-from core.constants import HAIKU, GEMINI_FLASH, PROVIDER_CLAUDE, PROVIDER_GEMINI, PREFLIGHT_DIR
+from core.constants import (
+    PROVIDER_CLAUDE,
+    PROVIDER_GEMINI,
+    PREFLIGHT_DIR,
+    MODEL_OPTIONS,
+)
 from core.token_counter import count_tokens, format_savings
 from memory.context_finder import ContextFinder
 from memory.file_indexer import FileIndexer
@@ -37,12 +42,7 @@ def run_change(
     *,
     provider: str = PROVIDER_CLAUDE,
 ) -> None:
-    """Run the smart change pipeline.
-
-    Args:
-        project_root: Project directory. Defaults to cwd.
-        provider: AI provider to use (``"claude"`` or ``"gemini"``).
-    """
+    """Run the smart change pipeline."""
     if project_root is None:
         project_root = Path.cwd()
 
@@ -54,18 +54,43 @@ def run_change(
         )
         return
 
-    provider_label = provider.capitalize()
-
     # ── Header ──────────────────────────────────────────────
     console.print()
     console.print(
         Panel(
-            f"[bold cyan]🔧 Preflight AI — Smart Change Mode[/bold cyan]\n"
-            f"[dim]Provider: {provider_label}[/dim]",
+            "[bold cyan]🔧 Preflight AI — Smart Change Mode[/bold cyan]",
             border_style="cyan",
         )
     )
-    console.print()
+
+    # ── Step 0: Interactive Selection ───────────────────────
+    choices = [PROVIDER_CLAUDE, PROVIDER_GEMINI]
+    provider = Prompt.ask(
+        "Which [bold]AI Provider[/bold] do you want to use?",
+        choices=choices,
+        default=provider,
+    )
+
+    tiers = list(MODEL_OPTIONS[provider].keys())
+    tier = Prompt.ask(
+        f"Which [bold]{provider.capitalize()} Model Tier[/bold]?",
+        choices=tiers,
+        default=tiers[0],
+    )
+
+    # Apply selected models
+    selected_models = MODEL_OPTIONS[provider][tier]
+    if provider == PROVIDER_CLAUDE:
+        import core.constants as const
+        const.HAIKU = selected_models["haiku"]
+        const.CLAUDE_STAGE_CONFIG["change_analysis"]["model"] = const.HAIKU
+    else:
+        import core.constants as const
+        const.GEMINI_FLASH = selected_models["flash"]
+        const.GEMINI_STAGE_CONFIG["change_analysis"]["model"] = const.GEMINI_FLASH
+
+    provider_label = f"{provider.capitalize()} ({tier})"
+    console.print(f"[dim]Provider set to: {provider_label}[/dim]\n")
 
     # ── Get change description ──────────────────────────────
     change_desc = Prompt.ask("[bold]What do you want to change?[/bold]")

@@ -159,6 +159,32 @@ INDEXED_EXTENSIONS: Final[set[str]] = {
 }
 
 # ---------------------------------------------------------------------------
+# Interactive Model Options
+# ---------------------------------------------------------------------------
+MODEL_OPTIONS: Final[dict[str, dict[str, dict]]] = {
+    PROVIDER_CLAUDE: {
+        "Standard (3.5)": {
+            "sonnet": "claude-3-5-sonnet-latest",
+            "haiku": "claude-3-5-haiku-latest",
+        },
+        "Next (4.5)": {
+            "sonnet": "claude-sonnet-4-5",
+            "haiku": "claude-haiku-4-5-20251001",
+        },
+    },
+    PROVIDER_GEMINI: {
+        "Stable (1.5)": {
+            "pro": "gemini-1.5-pro",
+            "flash": "gemini-1.5-flash",
+        },
+        "Preview (2.5)": {
+            "pro": "gemini-2.5-pro-preview-06-05",
+            "flash": "gemini-2.5-flash-preview-05-20",
+        },
+    },
+}
+
+# ---------------------------------------------------------------------------
 # Preflight directory name
 # ---------------------------------------------------------------------------
 PREFLIGHT_DIR: Final[str] = ".preflight"
