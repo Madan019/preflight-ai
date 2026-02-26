@@ -1,0 +1,13 @@
+# Backend Rules — {{ framework }}
+
+{% if backend_rules %}
+{% for rule in backend_rules %}
+- {{ rule }}
+{% endfor %}
+{% endif %}
+
+## API Guidelines
+- Validate all inputs
+- Return consistent error responses
+- Use proper HTTP status codes
+- Follow RESTful conventions

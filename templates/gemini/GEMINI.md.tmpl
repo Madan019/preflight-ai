@@ -1,0 +1,34 @@
+# {{ project_name }} — Gemini Instructions
+
+## What This Is
+{{ core_purpose }}
+
+## Stack
+```
+{{ stack_summary }}
+```
+
+## Structure
+```
+{{ project_structure }}
+```
+
+{% if rules %}
+## Rules
+{% for rule in rules %}
+- {{ rule }}
+{% endfor %}
+{% endif %}
+
+## Always
+- Follow project coding conventions
+- Use type annotations where applicable
+- Write clear commit messages
+- Test before committing
+
+{% if build_phases %}
+## Build Order
+{% for phase in build_phases %}
+{{ phase }}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,14 @@
+# Project Agents
+
+{% if agents %}
+{% for agent in agents %}
+## {{ agent.name }}
+{{ agent.description }}
+{% endfor %}
+{% else %}
+## test-runner
+Runs the project test suite and reports results.
+
+## code-reviewer
+Reviews code changes for quality and consistency.
+{% endif %}

@@ -1,0 +1,14 @@
+# Project Skills
+
+{% if skills %}
+{% for skill in skills %}
+## /{{ skill.name }}
+{{ skill.description }}
+{% endfor %}
+{% else %}
+## /run-tests
+Run the project test suite.
+
+## /deploy
+Deploy to production/staging.
+{% endif %}

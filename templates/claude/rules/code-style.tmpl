@@ -1,0 +1,15 @@
+# Code Style Rules
+
+## Language: {{ language }}
+
+{% if style_rules %}
+{% for rule in style_rules %}
+- {{ rule }}
+{% endfor %}
+{% endif %}
+
+## Formatting
+- Use consistent indentation
+- Follow {{ language }} community conventions
+- Keep functions small and focused
+- Use descriptive variable names

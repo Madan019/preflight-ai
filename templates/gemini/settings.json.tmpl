@@ -1,0 +1,11 @@
+{
+  "project": "{{ project_name }}",
+  "language": "{{ language }}",
+  "settings": {
+    {% if settings %}
+    {% for key, value in settings.items() %}
+    "{{ key }}": "{{ value }}"{{ "," if not loop.last }}
+    {% endfor %}
+    {% endif %}
+  }
+}

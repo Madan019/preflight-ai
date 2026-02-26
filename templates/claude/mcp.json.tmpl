@@ -1,0 +1,14 @@
+{
+  {% if mcp_servers %}
+  "mcpServers": {
+    {% for server in mcp_servers %}
+    "{{ server.name }}": {
+      "command": "{{ server.command }}",
+      "args": {{ server.args | tojson }}
+    }{{ "," if not loop.last }}
+    {% endfor %}
+  }
+  {% else %}
+  "mcpServers": {}
+  {% endif %}
+}

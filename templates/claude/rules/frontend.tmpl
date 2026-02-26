@@ -1,0 +1,12 @@
+# Frontend Rules — {{ framework }}
+
+{% if frontend_rules %}
+{% for rule in frontend_rules %}
+- {{ rule }}
+{% endfor %}
+{% endif %}
+
+## Component Guidelines
+- Keep components focused and reusable
+- Use proper state management
+- Follow {{ framework }} best practices

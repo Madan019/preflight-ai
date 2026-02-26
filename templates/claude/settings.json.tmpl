@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read files",
+      "Write files",
+      "Execute commands"
+    ],
+    "deny": []
+  },
+  "environment": {
+    {% if env_vars %}
+    {% for key, value in env_vars.items() %}
+    "{{ key }}": "{{ value }}"{{ "," if not loop.last }}
+    {% endfor %}
+    {% endif %}
+  }
+}

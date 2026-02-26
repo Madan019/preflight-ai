@@ -1,0 +1,13 @@
+# Database Rules — {{ database }}
+
+{% if database_rules %}
+{% for rule in database_rules %}
+- {{ rule }}
+{% endfor %}
+{% endif %}
+
+## Guidelines
+- Always use migrations
+- Never raw SQL in application code (use ORM)
+- Index frequently queried columns
+- Use transactions for multi-step operations

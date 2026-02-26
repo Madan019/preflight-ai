@@ -1,0 +1,13 @@
+# Testing Rules — {{ framework }}
+
+{% if testing_rules %}
+{% for rule in testing_rules %}
+- {{ rule }}
+{% endfor %}
+{% endif %}
+
+## Guidelines
+- Test all public functions
+- Mock external services
+- Use fixtures for repeated setup
+- Aim for >80% coverage

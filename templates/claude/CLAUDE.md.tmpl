@@ -1,0 +1,41 @@
+# {{ project_name }} — Claude Instructions
+
+## What This Is
+{{ core_purpose }}
+
+## Stack
+```
+{{ stack_summary }}
+```
+
+## Structure
+```
+{{ project_structure }}
+```
+
+{% if rules %}
+## Rules
+{% for rule in rules %}
+- {{ rule }}
+{% endfor %}
+{% endif %}
+
+## Always
+- Type hints on every function
+- Docstrings on all public functions
+- Rich console.print() — never raw print()
+- Specific exceptions — never bare except
+- JSON output enforced on every AI call
+
+## Never
+- No bare except
+- No raw print()
+- No hardcoded API keys
+- No untyped functions
+
+{% if build_phases %}
+## Build Order
+{% for phase in build_phases %}
+{{ phase }}
+{% endfor %}
+{% endif %}
