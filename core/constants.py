@@ -17,8 +17,9 @@ HAIKU: Final[str] = "claude-haiku-4-5-20251001"
 # ---------------------------------------------------------------------------
 # Gemini model identifiers
 # ---------------------------------------------------------------------------
-GEMINI_PRO: Final[str] = "gemini-2.5-pro-preview-06-05"
-GEMINI_FLASH: Final[str] = "gemini-2.5-flash-preview-05-20"
+import os
+GEMINI_PRO: Final[str] = os.environ.get("PREFLIGHT_GEMINI_PRO_MODEL", "gemini-1.5-pro")
+GEMINI_FLASH: Final[str] = os.environ.get("PREFLIGHT_GEMINI_FLASH_MODEL", "gemini-1.5-flash")
 
 # ---------------------------------------------------------------------------
 # Cost per 1 M tokens (USD)
@@ -36,19 +37,22 @@ COSTS_PER_MILLION: Final[dict[str, dict[str, float]]] = {
         "cache_read": 0.10,
         "cache_write": 1.25,
     },
-    GEMINI_PRO: {
+    "gemini-1.5-pro": {
         "input": 1.25,
-        "output": 10.00,
+        "output": 5.00,
         "cache_read": 0.315,
         "cache_write": 1.25,
     },
-    GEMINI_FLASH: {
-        "input": 0.15,
-        "output": 0.60,
-        "cache_read": 0.0375,
-        "cache_write": 0.15,
+    "gemini-1.5-flash": {
+        "input": 0.075,
+        "output": 0.30,
+        "cache_read": 0.018,
+        "cache_write": 0.075,
     },
+    GEMINI_PRO: { "input": 1.25, "output": 10.00, "cache_read": 0.315, "cache_write": 1.25 },
+    GEMINI_FLASH: { "input": 0.15, "output": 0.60, "cache_read": 0.0375, "cache_write": 0.15 },
 }
+
 
 # ---------------------------------------------------------------------------
 # Per-stage configuration — Claude  (model, max_tokens, temperature)
