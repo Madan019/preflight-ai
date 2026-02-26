@@ -80,9 +80,9 @@ Preflight uses a tiered model approach to maximize quality while minimizing cost
 
 | Feature | Claude Mode | Gemini Mode |
 | :--- | :--- | :--- |
-| **Parsing & Analysis** | Claude 3.5 Haiku | Gemini 2.5 Flash |
+| **Parsing & Analysis** | Claude 4.5 Haiku | Gemini 2.5 Flash |
 | **File Generation** | Claude 4.5 Sonnet | Gemini 2.5 Pro |
-| **Change Discovery** | Claude 3.5 Haiku | Gemini 2.5 Flash |
+| **Change Discovery** | Claude 4.5 Haiku | Gemini 2.5 Flash |
 
 Switch providers anytime:
 ```bash
