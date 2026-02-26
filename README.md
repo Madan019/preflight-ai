@@ -1,171 +1,118 @@
 # 🚀 Preflight AI
 
-Intelligent pre-flight layer between developers and AI coding assistants.
-Generates optimized `.claude/` and `.gemini/` config folders, maintains local memory, and reduces token usage by **85-95%** on repeated sessions.
+**The intelligent pre-flight layer for AI coding assistants.**
 
-## Installation
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Supported Models](https://img.shields.io/badge/AI-Claude_%7C_Gemini-8e44ad.svg)](#-dual-provider-precision)
 
-```bash
-pip install preflight-ai
-# OR
-pipx install preflight-ai
-```
+Preflight AI acts as a sophisticated buffer between you and your AI agents (Claude Code & Gemini CLI). It manages project memory, indexes your codebase, and—most importantly—injects **surgical context** to reduce token usage by **85-95%**.
 
-## Quick Start
+---
 
-### Setup Mode
-Run once on a new or existing project:
+## 📉 The Problem: Context Bloat
+AI coding assistants are powerful, but sending your entire codebase on every turn is:
+1. **Expensive**: Burns thousands of unnecessary tokens.
+2. **Confusing**: Leads to "context drift" where the AI loses track of the core task.
+3. **Slow**: Large context windows increase latency.
 
-```bash
-cd your-project/
-preflight setup
-```
+## ✨ The Solution: Surgical Context
+Preflight AI analyzes your change request *before* you talk to your main agent. It identifies the exact files, modules, and architectural decisions needed for that specific task and injects them into your assistant's system instructions.
 
-This will:
-1. Ask you to describe your project in plain english
-2. Generate smart follow-up questions
-3. Analyze your answers for gaps and contradictions
-4. Generate optimized `.claude/`, `.gemini/`, and `.preflight/` folders
-5. Index your codebase for future token savings
+---
 
-### Change Mode
-Run when you want to modify something:
+## 🛠 Features
 
-```bash
-preflight change
-```
+- 🧠 **Local Project Memory**: Maintains a `memory.json` of your stack and architectural decisions.
+- 🎯 **Surgical Injection**: Automatically identifies and loads only relevant files for a specific change.
+- ⚡ **Dual Provider Precision**: Switch between **Anthropic (Claude)** and **Google (Gemini)** with a single flag.
+- ✂️ **Smart Compression**: Strips comments, docstrings, and boilerplate to maximize token efficiency.
+- 📊 **Savings Dashboard**: Track exactly how many tokens (and dollars) you've saved.
+- 📁 **Config Generator**: Scaffolds optimized `.claude/` and `.gemini/` folders tailored to your specific stack.
+
+---
+
 ## 🚀 Quick Start
 
-1.  **Set your API Keys**:
-    ```bash
-    export ANTHROPIC_API_KEY=sk-ant-...  # For Claude
-    export GEMINI_API_KEY=your-key        # For Gemini
-    ```
-
-2.  **Install the tool**:
-    ```bash
-    pip install .
-    ```
-
-3.  **Initialize a project**:
-    ```bash
-    preflight setup --provider gemini
-    ```
-
----
-
-## 🛠 Working with Existing Projects
-
-Preflight AI isn't just for new projects—it's most powerful when used to maintain existing ones.
-
-### 1. The Initial Sync
-Run `preflight setup` in any existing project. Preflight will:
-- Walk your directory tree and index every file.
-- Detect imports/exports to map your project's internal dependencies.
-- Create a `memory.json` that acts as the "source of truth" for AI assistants.
-
-### 2. Surgical Context Injection (The `change` command)
-Instead of giving an AI assistant your whole project (expensive and confusing), use:
+### 1. Installation
+Install directly via pip:
 ```bash
-preflight change "Refactor the user authentication to use JWT instead of sessions"
+pip install git+https://github.com/Madan019/preflight-ai.git
 ```
 
-Preflight will:
-1. Use a cheap model (Haiku/Flash) to identify *exactly* which 3-5 files need to change.
-2. Load those files + their direct imports.
-3. Strip comments/docstrings to save tokens.
-4. Inject this "Context Package" into your `.claude/CLAUDE.md` or `.gemini/GEMINI.md`.
-
-### 3. Re-indexing
-After making significant manual changes or adding many files, run:
+### 2. Set API Keys
 ```bash
-preflight index
+# Set at least one to get started
+export ANTHROPIC_API_KEY=sk-ant-...
+export GEMINI_API_KEY=your-google-api-key
+```
+
+### 3. Initialize a Project
+Run this in any new or existing project root:
+```bash
+preflight setup --provider claude
 ```
 
 ---
 
+## 📖 Core Workflow
+
+### The "Change" Loop
+This is where the magic happens. When you want to make a modification to your code:
+
+1. **Tell Preflight what you want to do**:
+   ```bash
+   preflight change "Add a Stripe checkout webhook to the billing module"
+   ```
+2. **Preflight analyzes the request**: It finds `billing.py`, `models.py`, and your API routes.
+3. **Context Injection**: It injects compressed versions of those files into `.claude/CLAUDE.md`.
+4. **Launch Your Agent**:
+   ```bash
+   claude
+   ```
+   Claude now has the exact context it needs—no more, no less.
+
 ---
 
-## 🌍 Sharing & Distribution
+## 🤖 Dual Provider Support
 
-### 1. Push to GitHub
-To share this tool, push it to a public GitHub repository. Ensure your `.gitignore` is active so you don't leak API keys or local memory.
+Preflight uses a tiered model approach to maximize quality while minimizing cost:
 
-### 2. Installation for others
-Other developers can install your tool directly from GitHub:
+| Feature | Claude Mode | Gemini Mode |
+| :--- | :--- | :--- |
+| **Parsing & Analysis** | Claude 3.5 Haiku | Gemini 1.5 Flash |
+| **File Generation** | Claude 3.5 Sonnet | Gemini 1.5 Pro |
+| **Change Discovery** | Claude 3.5 Haiku | Gemini 1.5 Flash |
+
+Switch providers anytime:
 ```bash
-pip install git+https://github.com/your-username/preflight-ai.git
+preflight setup --provider gemini
+preflight change --provider claude
 ```
 
-### 3. Future Step: PyPI
-If you want to make it an "official" package (installable via `pip install preflight-ai`), you can publish it to [PyPI](https://pypi.org/).
+---
 
-## 💡 Next Steps
-- [ ] Initialize Git and push to GitHub.
-- [ ] Add your first project decision to `memory.json` using `preflight change`.
-- [ ] Try a complex refactor on an existing app and monitor the savings dashboard!
-
-No external APIs. Everything stored locally. Git-ignorable or committable — your choice.
-
-## Token Savings Example
-
-```
-Change: "add forgot password to login"
-Affected: auth module
-
-Files loaded:
-  • src/auth/login.py         (320 tokens)
-  • src/auth/email_service.py  (180 tokens)
-  • src/models/user.py         (140 tokens)
-
-Total sent:       640 tokens
-Full codebase:  84,000 tokens
-Saved:          99.3% ($0.037)
-```
-
-## Supported AI Tools
-
-- **Claude Code** — generates full `.claude/` folder (CLAUDE.md, settings.json, rules/, agents/, skills/, hooks/, .mcp.json)
-- **Gemini CLI** — generates `.gemini/` folder (GEMINI.md, settings.json)
-
-## Commands
+## 📋 Commands Reference
 
 | Command | Description |
-|---------|-------------|
-| `preflight setup` | Full setup for new/existing project |
-| `preflight change` | Smart change mode with minimal context |
-| `preflight update` | Re-generate config files |
-| `preflight memory show` | Show memory.json in readable format |
-| `preflight memory reset` | Clear memory and re-index |
-| `preflight index` | Re-index codebase after big changes |
-| `preflight savings` | Show token savings dashboard |
-| `preflight validate` | Check config folders for issues |
-| `preflight --version` | Show version |
+| :--- | :--- |
+| `setup` | Full project initialization and config generation. |
+| `change` | **Main Workflow**: surgical context discovery and injection. |
+| `update` | Sync local memory back to your AI config files. |
+| `index` | Force a re-index of the codebase (useful after big refactors). |
+| `savings` | View your cumulative token and cost savings. |
+| `validate` | Check your `.claude` and `.gemini` folders for health issues. |
+| `memory show` | Display the project's architectural memory. |
 
-## Environment Variables
+---
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `ANTHROPIC_API_KEY` | *(required)* | Your Anthropic API key |
-| `PREFLIGHT_AI_TARGET` | `both` | `claude`, `gemini`, or `both` |
-| `PREFLIGHT_DEFAULT_MODEL` | `sonnet` | `sonnet` or `opus` |
-| `PREFLIGHT_MEMORY_DIR` | `.preflight` | Memory directory name |
+## ⚙️ Configuration & Templates
+Preflight AI uses Jinja2 templates to generate your rules. You can customize the look and feel of your generated `.claude/rules` by modifying the templates in the `templates/` directory of the source.
 
-## Development
+---
 
-```bash
-# Install in dev mode
-pip install -e ".[dev]"
+## 🛡 License
+Distributed under the MIT License. See `LICENSE` for more information.
 
-# Run tests
-pytest tests/ -v --cov=. --cov-report=term-missing
-```
-
-## Requirements
-
-- Python 3.11+
-- Works on macOS, Linux, Windows (WSL)
-
-## License
-
-MIT
+---
+**Build smarter, spend less. Happy coding!** 🚀
