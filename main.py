@@ -44,7 +44,7 @@ app.add_typer(memory_app, name="memory")
 def _version_callback(value: bool) -> None:
     """Print version and exit."""
     if value:
-        console.print("[bold cyan]preflight-ai[/bold cyan] v0.1.0")
+        console.print("[bold cyan]preflight-ai[/bold cyan] v0.1.1")
         raise typer.Exit()
 
 
